@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/VNNChau/SS2/issues"
   },
-  "homepage": "https://github.com/VNNChau/SS2#readme"
+  "homepage": "https://github.com/VNNChau/SS2#readme",
+  "dependencies": {
+    "@google/generative-ai": "^0.5.0"
+  }
 }
