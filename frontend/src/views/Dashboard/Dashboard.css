@@ -1,0 +1,105 @@
+.App {
+  text-align: center;
+  background-color: black;
+  display: flex;
+  color: white;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.side-menu {
+  width: 260px;
+  background-color: #202123;
+  padding: 10px;
+}
+
+.chat-box {
+  flex: 1;
+  background-color: #343541;
+  position: relative;
+}
+
+.side-menu-button {
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 15px;
+  text-align: left;
+}
+
+.chat-input-holder {
+  padding: 24px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+}
+
+.chat-input {
+  padding: 12px;
+  background-color: #40414f;
+  width: 90%;
+  border: none;
+  border-radius: 5px;
+  margin: 12px;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
+  outline: none;
+  color: white;
+  font-size: 13;
+}
+
+.chat-log {
+  text-align: left;
+  display: flexbox;
+}
+
+.chat-message.gemini {
+  background-color: #40414f;
+}
+
+.chat-message-center {
+  display: flex;
+  padding: 12px;
+  padding-left: 24px;
+  padding-right: 24px;
+  margin-left: 27px;
+}
+
+.avatar {
+  background-color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+.avatar.gemini {
+  background-color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-color: aquamarine;
+}
+
+.message {
+  padding-left: 40px;
+  padding-right: 40px;
+
+}
+
+.submit-button {
+  background-color: #565869;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.4s;
+  margin: 10px;
+  padding: 10px;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+}

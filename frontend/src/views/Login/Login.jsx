@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import './LoginSignup.css';
-import user_icon from '../Assets/person.png';
-import email_icon from '../Assets/email.png';
-import password_icon from '../Assets/password.png';
-import reenter_icon from '../Assets/re-enter.png';
-import phone_icon from '../Assets/phone.png';
+import './Login.css';
 
 const LoginSignup = () => {
 
@@ -59,19 +54,19 @@ const LoginSignup = () => {
           <i className='bx bx-hide eye-icon' onClick={handlePasswordToggle}></i>
         </div>}
 
-        {action === 'Sign Up' ? <div></div> : <div className='forgot-password'><span onClick={() => console.log("Forgot Password clicked")}>Forgot Password?</span></div>}        
+        {/* {action === 'Sign Up' ? <div></div> : <div className='forgot-password'><span onClick={() => console.log("Forgot Password clicked")}>Forgot Password?</span></div>}         */}
         <div className='submit-container'>
           <div className={action === "Sign Up" ? "submit gray" : "submit"} onClick={() => handleActionChange('Login')}>Login</div>
         </div>
       </div>
 
-      {action === 'Sign Up' ? <div></div> : <div className='signup'>
+      {/* {action === 'Sign Up' ? <div></div> : <div className='signup'>
         Don't have an account? <span onClick={() => handleActionChange('Sign Up')}className='link'>Sign Up</span>.
-      </div>}
+      </div>} */}
 
-      {action === 'Login' ? <div></div> : <div className='signin'>
+      {/* {action === 'Login' ? <div></div> : <div className='signin'>
         Already have an account? <span onClick={() => handleActionChange('Login')}className='link'>Sign In</span>.
-      </div>}
+      </div>} */}
 
       <div class="line"></div>
     </div>
