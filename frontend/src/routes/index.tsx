@@ -4,8 +4,8 @@ import {
 	redirect,
 } from "react-router-dom";
 import Dashboard from "../views/Dashboard/Dashboard";
-import Login from "../views/Login/Login";
 import  token from "../plugins/token"
+import GoogleSignIn from "../views/Login/GoogleSignIn";
 
 const router = createBrowserRouter([
 	{
@@ -14,7 +14,7 @@ const router = createBrowserRouter([
 		children: [
 			{
 				index: true,
-				Component: Login,
+				Component: GoogleSignIn,
 			},
 		],
 	},

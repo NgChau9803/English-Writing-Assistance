@@ -17,17 +17,11 @@ function Dashboard() {
 		setInput("");
 
 		try {
-			const response = await fetch("http://localhost:3000", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					messages: newChatlog.map((message) => message.message).join(" "),
-				}),
+			const response = await axios.post("http://localhost:5000/process-text", {
+				input,
 			});
-			const data = await response.json();
-			console.log(data);
+			// messages: newChatlog.map((message) => message.message).join(" ");
+			setChatlog([response.data, ...newChatlog]);
 		} catch (error) {
 			console.error("Error:", error);
 		}
@@ -54,17 +48,17 @@ function Dashboard() {
 					</div>
 				</div>
 				<div className="chat-input-holder">
-						<form onSubmit={handleSubmit} className="form">
-							<textarea
-								value={input}
-								onChange={(e) => setInput(e.target.value)}
-								className="chat-input"
-								placeholder="Type a message..."
-								rows={1}></textarea>
-							<button type="submit" className="submit-button">
-								Submit
-							</button>
-						</form>
+					<form onSubmit={handleSubmit} className="form">
+						<textarea
+							value={input}
+							onChange={(e) => setInput(e.target.value)}
+							className="chat-input"
+							placeholder="Type a message..."
+							rows={1}></textarea>
+						<button type="submit" className="submit-button">
+							Submit
+						</button>
+					</form>
 				</div>
 			</section>
 		</div>
