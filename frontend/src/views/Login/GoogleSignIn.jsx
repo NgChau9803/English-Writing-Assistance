@@ -9,7 +9,7 @@ const GoogleSignIn = () => {
 
 		const config = {
 			method: "POST",
-			url: "http://localhost:5000/auth/google",
+			url: "",
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -18,6 +18,7 @@ const GoogleSignIn = () => {
 
 		await axios(config);
 	};
+
 
 	return (
 		<GoogleOAuthProvider clientId={process.env.REACT_APP_CLIENT_ID}>

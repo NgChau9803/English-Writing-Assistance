@@ -1,5 +1,4 @@
 import axios from "axios";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { callGeminiAPI } from "./gemini.js";
 import checkPlagiarism from "./checkPlagiarism.js";
 
