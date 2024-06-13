@@ -1,45 +1,29 @@
-import axios from "axios";
-import db from "../db/db.js";
+import { OAuth2Client } from 'google-auth-library';
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';  // Assuming you have a User model to interact with the Users table
+
+const client = new OAuth2Client(process.env.CLIENT_ID);
 
 export const googleAuth = async (req, res) => {
-	const { token } = req.body;
+  const { token } = req.body;
 
-	try {
-		const response = await axios.get(
-			`https://oauth2.googleapis.com/tokeninfo?id_token=${token}`
-		);
-		const { email, sub: userId } = response.data;
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.CLIENT_ID,
+    });
+    const { name, email, sub: googleId } = ticket.getPayload();
 
-		// Check if the user already exists in the database
-		db.query("SELECT * FROM users WHERE email = ?", [email], (err, result) => {
-			if (err) {
-				return res.status(500).json({ error: "Database query error" });
-			}
+    let user = await User.findOne({ where: { google_id: googleId } });
+    if (!user) {
+      user = await User.create({ google_id: googleId, email, name });
+    }
 
-			if (result.length > 0) {
-				// User exists
-				res.status(200).json({ message: "User authenticated", email, userId });
-			} else {
-				// User does not exist, insert new user
-				db.query(
-					"INSERT INTO users (email, google_id) VALUES (?, ?)",
-					[email, userId],
-					(err, result) => {
-						if (err) {
-							return res.status(500).json({ error: "Database insert error" });
-						}
-						res
-							.status(200)
-							.json({
-								message: "User authenticated and created",
-								email,
-								userId,
-							});
-					}
-				);
-			}
-		});
-	} catch (error) {
-		res.status(400).json({ error: "Invalid token" });
-	}
+    const jwtToken = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.cookie('token', jwtToken, { httpOnly: true });
+    res.status(200).json({ message: 'Authenticated successfully' });
+  } catch (error) {
+    res.status(401).json({ message: 'Authentication failed', error });
+  }
 };

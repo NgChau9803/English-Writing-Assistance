@@ -1,31 +1,32 @@
 import axios from "axios";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { callGeminiAPI } from "./gemini.js";
 import checkPlagiarism from "./checkPlagiarism.js";
 
 export const processText = async (req, res) => {
-	const text = req.body.text;
+		const { text, task } = req.body;
+		let result;
+		let prompt;
 
-	try {
-		const grammarPrompt = `Check the following text for grammar and spelling errors and provide corrections: ${text}`;
-		const grammarResult = await callGeminiAPI(grammarPrompt);
+		switch (task) {
+			case "grammar check":
+				prompt = `Check the following text for grammar and spelling errors and provide corrections: ${text}`;
+				result = await callGeminiAPI(prompt);
+				break;
+			case "text completion":
+				prompt = `Complete the following text: ${text}`;
+				result = await callGeminiAPI(prompt);
+				break;
+			case "paraphrasing":
+				prompt = `Paraphrase the following text: ${text}`;
+				result = await callGeminiAPI(prompt);
+				break;
+			case "plagiarism check":
+				result = await checkPlagiarism(text);
+				break;
+			default:
+				result = { error: "Invalid task" };
+		}
 
-		const completionPrompt = `Complete the following text: ${text}`;
-		const completionResult = await callGeminiAPI(completionPrompt);
-
-		const paraphrasePrompt = `Paraphrase the following text: ${text}`;
-		const paraphraseResult = await callGeminiAPI(paraphrasePrompt);
-
-		const plagiarismResult = await checkPlagiarism(text);
-
-		res.json({
-			grammar: grammarResult,
-			completion: completionResult,
-			paraphrasing: paraphraseResult,
-			plagiarism: plagiarismResult,
-		});
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ error: "Error processing text" });
-	}
-};
-
+		res.json(result);
+	};

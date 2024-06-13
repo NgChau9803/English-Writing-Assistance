@@ -1,17 +1,34 @@
 import express from 'express';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
 import bodyParser from 'body-parser';
-import router from './routes/index.js';
+import cors from 'cors';
+import { callGeminiAPI } from './controllers/gemini.js';
+// import { googleAuth } from './controllers/authController.js';
 
 const app = express();
+const port = 5000;
 
-app.use(cors());
 app.use(bodyParser.json());
-app.use(cookieParser());
+app.use(cors());
 
-app.use("/google-auth", router);
-app.use("/process-text", router);
+// app.post('/auth/google', async (req, res) => {
+//   try {
+//     await googleAuth(req, res);
+//   } catch (error) {
+//     console.error('Error:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
+app.post('/process-text', async (req, res) => {
+  try {
+    const responseText = await callGeminiAPI(req.body.text);
+    res.json({ message: responseText, user: 'gemini' });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
-export default app;
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});

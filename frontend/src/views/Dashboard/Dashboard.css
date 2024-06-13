@@ -8,12 +8,17 @@
   bottom: 0;
   left: 0;
   right: 0;
+  font-family:'Times New Roman', Times, serif;
+  font-size: 18px;
 }
 
 .side-menu {
   width: 260px;
   background-color: #202123;
   padding: 10px;
+  max-width: 100%;
+  max-height: 100%;
+  overflow-y:hidden;
 }
 
 .chat-box {
@@ -23,19 +28,23 @@
 }
 
 .side-menu-button {
-  border: 1px solid white;
+  background-color:#40414f;
+  padding: 10px;
+  border: 1px solid ;
   border-radius: 5px;
   padding: 15px;
   text-align: left;
+  width: 100%;
+  color: whitesmoke;
 }
 
 .chat-input-holder {
-  padding: 24px;
-  position: absolute;
+  padding-bottom: 24px;
+  position:absolute;
   bottom: 0;
   left: 0;
   right: 0;
-
+  background-color: #40414f;
 }
 
 .chat-input {
@@ -52,8 +61,11 @@
 }
 
 .chat-log {
+  max-width: 100%;
+  overflow-y:scroll;   
+  max-height: 100%;
   text-align: left;
-  display: flexbox;
+  padding-bottom: 90px;
 }
 
 .chat-message.gemini {
@@ -69,23 +81,23 @@
 }
 
 .avatar {
-  background-color: white;
+  /* background-color: white; */
   border-radius: 50%;
   width: 40px;
   height: 40px;
 }
 
-.avatar.gemini {
-  background-color: white;
+/* .avatar.gemini {
   border-radius: 50%;
   width: 40px;
   height: 40px;
   background-color: aquamarine;
-}
+} */
 
 .message {
   padding-left: 40px;
   padding-right: 40px;
+  word-spacing: 3px;
 
 }
 
@@ -103,3 +115,4 @@
   display: flex;
   justify-content: center;
 }
+

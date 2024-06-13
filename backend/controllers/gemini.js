@@ -5,15 +5,15 @@ dotenv.config();
 
 const genAI = new GoogleGenerativeAI("AIzaSyDA_EghEhY9i0mPwY-QXTCUwpcfaR1UbFQ");
 
-export const callGeminiAPI = async (res, req) => {
+export const callGeminiAPI = async (prompt) => {
 	try {
 		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-		const prompt = req.body.text;
 		const result = await model.generateContent(prompt);
 		const response = await result.response;
-		const text = response.text();
-		console.log(text);
+		const text = await response.text();
+    return text;
 	} catch (error) {
 		console.error(error);
+    throw new Error('Failed to generate content');
 	}
 };

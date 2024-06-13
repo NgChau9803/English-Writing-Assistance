@@ -9,7 +9,7 @@ const GoogleSignIn = () => {
 
 		const config = {
 			method: "POST",
-			url: "http://localhost:5000/google-auth",
+			url: "http://localhost:5000/auth/google",
 			headers: {
 				"Content-Type": "application/json",
 			},
