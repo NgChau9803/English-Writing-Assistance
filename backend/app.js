@@ -1,34 +1,42 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import { callGeminiAPI } from './controllers/gemini.js';
-// import { googleAuth } from './controllers/authController.js';
+import express from "express";
+import cors from "cors";
+import cookieSession from "cookie-session";
+import bodyParser from "body-parser";
+import db from "./models/index.js";
+import chatRoutes from "./routes/chatRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import passport from "./config/passport.js";
 
 const app = express();
-const port = 5000;
+const PORT = process.env.PORT || 5000;
+
+app.use(
+	cookieSession({
+		name: "session",
+		keys: ["cyberwolve"],
+		maxAge: 24 * 60 * 60 * 100,
+	})
+);
+
+app.use(
+	cors({
+		origin: "http://localhost:3000",
+		methods: "GET,POST,PUT,DELETE",
+		credentials: true,
+	})
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(bodyParser.json());
-app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
-// app.post('/auth/google', async (req, res) => {
-//   try {
-//     await googleAuth(req, res);
-//   } catch (error) {
-//     console.error('Error:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+app.use("/auth", authRoutes);
+app.use("/processText", chatRoutes);
 
-app.post('/process-text', async (req, res) => {
-  try {
-    const responseText = await callGeminiAPI(req.body.text);
-    res.json({ message: responseText, user: 'gemini' });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+app.listen(PORT, async () => {
+	console.log(`Server is running on port ${PORT}`);
+	await db.sequelize.sync({ force: false });
 });

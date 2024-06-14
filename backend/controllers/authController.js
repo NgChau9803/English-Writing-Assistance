@@ -1,6 +1,6 @@
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';  // Assuming you have a User model to interact with the Users table
+import User from '../models/userModel.js';  // Assuming you have a User model to interact with the Users table
 
 const client = new OAuth2Client(process.env.CLIENT_ID);
 
