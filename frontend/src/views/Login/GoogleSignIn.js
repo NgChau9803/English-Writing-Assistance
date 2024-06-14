@@ -1,12 +1,10 @@
 import "./GoogleSignIn.css";
 import React from "react";
-import dotenv from "dotenv";
-dotenv.config();
 
 function Login() {
 	const googleAuth = () => {
 		window.open(
-			`${process.env.REACT_APP_API_URL}/auth/google/callback`,
+			`http://localhost:5000/auth/google/callback`,
 			"_self"
 		);
 	};
