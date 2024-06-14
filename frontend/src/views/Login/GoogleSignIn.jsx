@@ -1,33 +1,28 @@
-import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import "./GoogleSignIn.css";
+import React from "react";
+import dotenv from "dotenv";
+dotenv.config();
 
-const GoogleSignIn = () => {
-	const handleLogin = async (credentialResponse) => {
-		var obj = jwtDecode(credentialResponse.credential);
-		var data = JSON.stringify(obj);
-
-		const config = {
-			method: "POST",
-			url: "",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			data: data,
-		};
-
-		await axios(config);
+function Login() {
+	const googleAuth = () => {
+		window.open(
+			`${process.env.REACT_APP_API_URL}/auth/google/callback`,
+			"_self"
+		);
 	};
-
-
 	return (
-		<GoogleOAuthProvider clientId={process.env.REACT_APP_CLIENT_ID}>
-			<GoogleLogin
-				onSuccess={handleLogin}
-				onFailure={(error) => console.log(error)}
-			/>
-		</GoogleOAuthProvider>
+		<div className="container">
+			<h1 className="heading">Authenticate Form</h1>
+			<div className="form_container">
+				<div className="right">
+					<button className="google_btn" onClick={googleAuth}>
+						<img src="google.png" alt="google icon" />
+						<span>Sign in with Google</span>
+					</button>
+				</div>
+			</div>
+		</div>
 	);
-};
+}
 
-export default GoogleSignIn;
+export default Login;
