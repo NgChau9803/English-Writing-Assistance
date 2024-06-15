@@ -1,18 +1,18 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
 export default {
 	data: {
-		TOKEN_KEY: "access_token",
+		token : "access_token",
 	},
 	setToken: function (token) {
 		try {
-			localStorage.setItem(this.data.TOKEN_KEY, JSON.stringify(token));
+			localStorage.setItem(this.data.token, JSON.stringify(token));
 			return true;
 		} catch (error) {
 			return false;
 		}
 	},
 	getTokenFromStorage() {
-		return JSON.parse(localStorage.getItem(this.data.TOKEN_KEY) || "{}");
+		return JSON.parse(localStorage.getItem(this.data.token) || "{}");
 	},
 	getAuthorization: function () {
 		let tt = this.getTokenType();
@@ -25,7 +25,7 @@ export default {
 	getToken: function () {
 		try {
 			let t = this.getTokenFromStorage();
-			return t.access_token;
+			return t.token;
 		} catch (error) {
 			return null;
 		}

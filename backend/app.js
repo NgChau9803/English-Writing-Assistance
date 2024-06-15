@@ -38,15 +38,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/auth', authRoutes);
-app.use('/auth/google', authRoutes);
-app.use('/auth/google/callback', authRoutes);
-app.use('/auth/logout', authRoutes);
-app.use('/auth/login/success', authRoutes);
 app.use('/processText', chatRoutes);
-app.use('/processText/getChats', chatRoutes);
-app.use('/processText/createChats', chatRoutes);
-app.use('/processText/deleteChat/:id', chatRoutes);
-app.use('/processText/renameChat/:id', chatRoutes);
 
 
 app.listen(PORT, async () => {

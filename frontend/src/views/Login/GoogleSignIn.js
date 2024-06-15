@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./GoogleSignIn.css";
 
 function GoogleSignIn() {
@@ -7,11 +7,15 @@ function GoogleSignIn() {
 
     useEffect(() => {
         const query = new URLSearchParams(window.location.search);
-        const token = query.get('authToken');
+        const token = query.get("token");
+        console.log("Token from URL:", token);
 
         if (token) {
-            localStorage.setItem('token', token);
-            navigate('/dashboard');
+            localStorage.setItem("authToken", token);
+            console.log("Token stored in localStorage:", localStorage.getItem("authToken"));
+            navigate("/dashboard");
+        } else {
+            console.log("No token found in URL.");
         }
     }, [navigate]);
 

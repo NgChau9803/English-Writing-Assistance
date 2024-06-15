@@ -36,6 +36,7 @@ authRouter.get(
     }
 );
 
+
 authRouter.get('/logout', (req, res) => {
     req.logout();
     res.redirect(process.env.CLIENT_URL);
