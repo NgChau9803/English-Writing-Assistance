@@ -118,12 +118,12 @@
   height: 40px;
 }
 
-/* .avatar.gemini {
+.avatar.gemini-avatar {
+  padding-right: 2%;  
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  background-color: aquamarine;
-} */
+}
 
 .message {
   padding-left: 40px;

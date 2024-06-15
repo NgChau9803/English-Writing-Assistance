@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const genAI = new GoogleGenerativeAI("AIzaSyDA_EghEhY9i0mPwY-QXTCUwpcfaR1UbFQ");
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export const callGeminiAPI = async (prompt) => {
 	try {
