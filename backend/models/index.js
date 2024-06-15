@@ -1,23 +1,12 @@
-import { Sequelize, DataTypes } from "sequelize";
-import userModel from "./userModel.js";
-import chatModel from "./chatModel.js";
+import User from './user.js';
+import Chatbox from './chatbox.js';
+import Chat from './chat.js';
 
-const sequelize = new Sequelize("SS2", "root", "0354387203", {
-	host: "localhost",
-	dialect: "mysql",
-});
+// Define associations
+User.hasMany(Chatbox, { foreignKey: 'userId' });
+Chatbox.belongsTo(User, { foreignKey: 'userId' });
 
-const User = userModel(sequelize, Sequelize);
-const Chat = chatModel(sequelize, Sequelize);
+Chatbox.hasMany(Chat, { foreignKey: 'chatboxId' });
+Chat.belongsTo(Chatbox, { foreignKey: 'chatboxId' });
 
-User.hasMany(Chat, { foreignKey: 'userId' });
-Chat.belongsTo(User, { foreignKey: 'userId' });
-
-const db = {
-  sequelize,
-  Sequelize,
-  User,
-  Chat,
-};
-
-export default db;
+export { User, Chatbox, Chat };

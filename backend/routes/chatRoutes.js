@@ -1,90 +1,49 @@
-import express from 'express';
-import { callGeminiAPI } from '../controllers/gemini.js';
-import Chat from '../models/chatModel.js';
+import express from "express";
+import User from "../models/user.js";
+import Chat from "../models/chat.js";
+import Chatbox from "../models/chatbox.js";
+import callGeminiAPI from "../controllers/gemini.js";
+import authenticateJWT from "../controllers/authMiddleware.js";
 
 const chatRouter = express.Router();
 
-chatRouter.post('/processText', async (req, res) => {
-  const { userId, text } = req.body;
-
-  try {
-    const aiResponse = await callGeminiAPI(text);
-
-    const chat = await Chat.create({
-      message: text,
-      response: aiResponse,
-      userId: userId
+chatRouter.get("/getChats", authenticateJWT, (req, res) => {
+    Chatbox.findAll({ where: { userId: req.user.id } }).then((chatboxes) => {
+        res.json(chatboxes);
     });
-
-    res.status(201).json(chat);
-  } catch (error) {
-    console.error('Error calling Gemini API:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
 });
 
-chatRouter.get("/processText/getChats/:userId", async (req, res) => {
-	const { userId } = req.params;
-
-	try {
-		const chats = await Chat.findAll({
-			where: { userId },
-			order: [["createdAt", "DESC"]],
-		});
-
-		res.status(200).json(chats);
-	} catch (error) {
-		console.error("Error retrieving chats:", error);
-		res.status(500).json({ error: "Internal server error" });
-	}
+chatRouter.post("/createChats", authenticateJWT, (req, res) => {
+    const { userId,chatboxId } = req.body;
+    Chatbox.create({ userId: req.user.id, name: "New Chat" }).then((chatbox) => {
+        res.json({ id: chatbox.id });
+    });
 });
 
-chatRouter.post("/processText/createChats", async (req, res) => {
-	const { userId, message } = req.body;
-
-	try {
-		const chat = await Chat.create({ userId, message, response: "" });
-		res.status(201).json(chat);
-	} catch (error) {
-		console.error("Error creating chat:", error);
-		res.status(500).json({ error: "Internal server error" });
-	}
+chatRouter.post("/deleteChat/:id", authenticateJWT, (req, res) => {
+    Chatbox.destroy({ where: { id: req.params.id, userId: req.user.id } }).then(() => {
+        res.status(204).send();
+    });
 });
 
-chatRouter.post("/processText/deleteChat/:chatId", async (req, res) => {
-	const { chatId } = req.params;
-
-	try {
-		const chat = await Chat.findByPk(chatId);
-		if (chat) {
-			await chat.destroy();
-			res.status(200).json({ message: "Chat deleted successfully" });
-		} else {
-			res.status(404).json({ error: "Chat not found" });
-		}
-	} catch (error) {
-		console.error("Error deleting chat:", error);
-		res.status(500).json({ error: "Internal server error" });
-	}
+chatRouter.patch("/renameChat/:id", authenticateJWT, (req, res) => {
+    const { newName } = req.body;
+    Chatbox.update({ name: newName }, { where: { id: req.params.id, userId: req.user.id } }).then(
+        () => {
+            res.status(204).send();
+        }
+    );
 });
 
-chatRouter.patch("/renameChat/:chatId", async (req, res) => {
-	const { chatId } = req.params;
-	const { newName } = req.body;
-
-	try {
-		const chat = await Chat.findByPk(chatId);
-		if (chat) {
-			chat.message = newName;
-			await chat.save();
-			res.status(200).json(chat);
-		} else {
-			res.status(404).json({ error: "Chat not found" });
-		}
-	} catch (error) {
-		console.error("Error renaming chat:", error);
-		res.status(500).json({ error: "Internal server error" });
-	}
+chatRouter.post("/", authenticateJWT, async (req, res) => {
+    const { chatboxId, text } = req.body;
+    const aiResponse = await callGeminiAPI(text);
+    const chat = await Chat.create({
+        chatboxId,
+        message: text,
+        response: aiResponse,
+    });
+    res.json({ response: aiResponse });
 });
 
 export default chatRouter;

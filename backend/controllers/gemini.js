@@ -17,3 +17,5 @@ export const callGeminiAPI = async (prompt) => {
     throw new Error('Failed to generate content');
 	}
 };
+
+export default callGeminiAPI;
