@@ -175,7 +175,7 @@ function Dashboard() {
 	// 	);
 	// 	setActiveChatbox(id);
 	// };
-    const openChatbox = async (id) => { //handle err by try catch
+    const openChatbox = async (id) => { 
         try {
             const token = localStorage.getItem("authToken");
             const chatbox = await fetchChatboxById(id);

@@ -18,7 +18,7 @@ app.use(
 		secret: "rabitHole",
 		resave: false,
 		saveUninitialized: true,
-		cookie: { secure: false, maxAge: 600000 }, // Set to true if using https
+		cookie: { secure: false, maxAge: 600000 },
 	})
 );
 
@@ -43,5 +43,5 @@ app.use("/processText", chatRoutes);
 
 app.listen(PORT, async () => {
 	console.log(`Server is running on port ${PORT}`);
-	await sequelize.sync({ force: false }); // Use the correct sequelize instance here
+	await sequelize.sync({ force: false });
 });

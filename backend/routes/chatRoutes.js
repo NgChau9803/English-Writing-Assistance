@@ -1,5 +1,4 @@
 import express from "express";
-import User from "../models/user.js";
 import Chat from "../models/chat.js";
 import Chatbox from "../models/chatbox.js";
 import callGeminiAPI from "../controllers/gemini.js";
@@ -64,6 +63,7 @@ chatRouter.post("/", authenticateJWT, async (req, res) => {
         const userMessage = await Chat.create({ chatboxId, message: text, user: "user" });
         const geminiResponse = await callGeminiAPI(text);
         const geminiMessage = await Chat.create({ chatboxId, message: geminiResponse, user: "gemini" });
+        Chatbox.create({ me})
         res.json({ response: geminiMessage.message });
     } catch (error) {
         res.status(500).send("Error processing text");
