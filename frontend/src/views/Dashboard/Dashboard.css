@@ -99,11 +99,11 @@
   padding-bottom: 90px;
 }
 
-.chat-message.gemini {
+.chat.gemini {
   background-color: #40414f;
 }
 
-.chat-message-center {
+.chat-center {
   display: flex;
   padding: 12px;
   padding-left: 24px;

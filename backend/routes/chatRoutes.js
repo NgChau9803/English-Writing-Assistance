@@ -60,10 +60,9 @@ chatRouter.post("/", authenticateJWT, async (req, res) => {
     }
 
     try {
-        const userMessage = await Chat.create({ chatboxId, message: text, user: "user" });
         const geminiResponse = await callGeminiAPI(text);
-        const geminiMessage = await Chat.create({ chatboxId, message: geminiResponse, user: "gemini" });
-        res.json({ response: geminiMessage.message });
+        const chat = await Chat.create({ chatboxId, message: text, response: geminiResponse });
+        res.json({ response: geminiResponse}); 
     } catch (error) {
         res.status(500).send("Error processing text");
     }

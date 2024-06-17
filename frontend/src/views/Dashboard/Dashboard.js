@@ -41,38 +41,23 @@ function Dashboard() {
 		}
 	};
 
-    const fetchChatboxById = async (id) => {
-        const token = localStorage.getItem("authToken");
-        try {
-            const response = await axios.get(
-                `http://localhost:5000/processText/getChat/${id}`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
-    
-            // Ensure chats array is always initialized
-            return { ...response.data, chats: response.data.chats || [] };
-        } catch (error) {
-            console.error("Error fetching chatbox:", error);
-            return { chats: [] }; // Return an empty chat array in case of error
-        }
-    };
-	// const fetchChatboxById = async (id) => {
-	// 	const token = localStorage.getItem("authToken");
-	// 	try {
-	// 		const response = await axios.get(
-	// 			`http://localhost:5000/processText/getChat/${id}`,
-	// 			{
-	// 				headers: { Authorization: `Bearer ${token}` },
-	// 			}
-	// 		);
-	// 		return response.data;
-	// 	} catch (error) {
-	// 		console.error("Error fetching chatbox:", error);
-	// 	}
-	// };
+	const fetchChatboxById = async (id) => {
+		const token = localStorage.getItem("authToken");
+		try {
+			const response = await axios.get(
+				`http://localhost:5000/processText/getChat/${id}`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
 
+			return { ...response.data, chats: response.data.chats || [] };
+		} catch (error) {
+			console.error("Error fetching chatbox:", error);
+			return { chats: [] }; // Return an empty chat array in case of error
+		}
+	};
+    
 	const createChatbox = async () => {
 		const token = localStorage.getItem("authToken");
 		const response = await axios.post(
@@ -164,31 +149,20 @@ function Dashboard() {
 			console.error("Error:", error);
 		}
 	};
-
-	// const openChatbox = async (id) => {
-	// 	const token = localStorage.getItem("authToken");
-	// 	const chatbox = await fetchChatboxById(id, token);
-	// 	setChatboxes(
-	// 		chatboxes.map((cb) =>
-	// 			cb.id === id ? { ...cb, chats: chatbox.chats } : cb
-	// 		)
-	// 	);
-	// 	setActiveChatbox(id);
-	// };
-    const openChatbox = async (id) => { 
-        try {
-            const token = localStorage.getItem("authToken");
-            const chatbox = await fetchChatboxById(id);
-            setChatboxes(
-                chatboxes.map((cb) =>
-                    cb.id === id ? { ...cb, chats: chatbox.chats || [] } : cb
-                )
-            );
-            setActiveChatbox(id);
-        } catch (error) {
-            console.error("Error opening chatbox:", error);
-        }
-    };
+	const openChatbox = async (id) => {
+		try {
+			const token = localStorage.getItem("authToken");
+			const chatbox = await fetchChatboxById(id);
+			setChatboxes(
+				chatboxes.map((cb) =>
+					cb.id === id ? { ...cb, chats: chatbox.chats || [] } : cb
+				)
+			);
+			setActiveChatbox(id);
+		} catch (error) {
+			console.error("Error opening chatbox:", error);
+		}
+	};
 
 	return (
 		<div className="App">
@@ -215,8 +189,8 @@ function Dashboard() {
 					<div className="chat-log">
 						{chatboxes
 							.find((chatbox) => chatbox.id === activeChatbox)
-							.chats?.map((message, index) => (
-								<ChatMessage key={index} message={message} />
+							.chats?.map((chat, index) => (
+								<Chatting key={index} chat={chat} />
 							))}
 					</div>
 				)}
@@ -255,24 +229,27 @@ function Dashboard() {
 // 		</div>
 // 	);
 // };
-const ChatMessage = ({ message }) => {
-    if (!message || !message.user || !message.message) {
-        return null; // or some fallback UI
-    }
+const Chatting = ({ chat }) => {
+	if (!chat || !chat.user || !chat.message) {
+		return null; // or some fallback UI
+	}
 
-    return (
-        <div className={`chat-message ${message.user}`}>
-            <div className="chat-message-center">
-                <div
-                    className={`avatar ${
-                        message.user === "gemini" ? "gemini-avatar" : "user-avatar"
-                    }`}>
-                    {message.user.charAt(0).toUpperCase()}
-                </div>
-                <div className="message">{message.message}</div>
-            </div>
-        </div>
-    );
+	return (
+		<div className={`chat ${chat.user}`}>
+			<div className="chat-center">
+				<div
+					className={`avatar ${
+						chat.user === "gemini" ? "gemini-avatar" : "user-avatar"
+					}`}>
+					{chat.user.charAt(0).toUpperCase()}
+				</div>
+				<div className="message">{chat.message}</div>
+				{chat.user === "gemini" && chat.response && (
+					<div className="response">{chat.response}</div>
+				)}
+			</div>
+		</div>
+	);
 };
 
 export default Dashboard;
