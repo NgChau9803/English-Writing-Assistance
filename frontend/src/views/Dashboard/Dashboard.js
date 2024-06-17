@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Dashboard.css";
 import axios from "axios";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
@@ -40,7 +42,6 @@ function Dashboard() {
 			console.error("Error fetching chatboxes:", error);
 		}
 	};
-
 	const fetchChatboxById = async (id) => {
 		const token = localStorage.getItem("authToken");
 		try {
@@ -50,14 +51,17 @@ function Dashboard() {
 					headers: { Authorization: `Bearer ${token}` },
 				}
 			);
-
-			return { ...response.data, chats: response.data.chats || [] };
+			// Check if the response contains the necessary properties
+			if (response.data && response.data.chats) {
+				return { ...response.data, chats: response.data.chats };
+			}
+			return { chats: [] };
 		} catch (error) {
 			console.error("Error fetching chatbox:", error);
-			return { chats: [] }; // Return an empty chat array in case of error
+			return { chats: [] };
 		}
 	};
-    
+
 	const createChatbox = async () => {
 		const token = localStorage.getItem("authToken");
 		const response = await axios.post(
@@ -106,6 +110,16 @@ function Dashboard() {
 			console.error("Error renaming chatbox:", error);
 		}
 	};
+	const openChatbox = async (id) => {
+		const token = localStorage.getItem("authToken");
+		const chatbox = await fetchChatboxById(id, token);
+		setChatboxes(
+			chatboxes.map((cb) =>
+				cb.id === id ? { ...cb, chats: chatbox.chats } : cb
+			)
+		);
+		setActiveChatbox(id);
+	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -147,20 +161,6 @@ function Dashboard() {
 			);
 		} catch (error) {
 			console.error("Error:", error);
-		}
-	};
-	const openChatbox = async (id) => {
-		try {
-			const token = localStorage.getItem("authToken");
-			const chatbox = await fetchChatboxById(id);
-			setChatboxes(
-				chatboxes.map((cb) =>
-					cb.id === id ? { ...cb, chats: chatbox.chats || [] } : cb
-				)
-			);
-			setActiveChatbox(id);
-		} catch (error) {
-			console.error("Error opening chatbox:", error);
 		}
 	};
 
@@ -213,25 +213,9 @@ function Dashboard() {
 		</div>
 	);
 }
-
-// const ChatMessage = ({ message }) => {
-// 	return (
-// 		<div className={`chat-message ${message.user}`}>
-// 			<div className="chat-message-center">
-// 				<div
-// 					className={`avatar ${
-// 						message.user === "gemini" ? "gemini-avatar" : "user-avatar"
-// 					}`}>
-// 					{message.user.charAt(0).toUpperCase()}
-// 				</div>
-// 				<div className="message">{message.message}</div>
-// 			</div>
-// 		</div>
-// 	);
-// };
 const Chatting = ({ chat }) => {
 	if (!chat || !chat.user || !chat.message) {
-		return null; // or some fallback UI
+		return null;
 	}
 
 	return (
@@ -241,15 +225,22 @@ const Chatting = ({ chat }) => {
 					className={`avatar ${
 						chat.user === "gemini" ? "gemini-avatar" : "user-avatar"
 					}`}>
-					{chat.user.charAt(0).toUpperCase()}
+					{chat.user.toUpperCase()}
 				</div>
-				<div className="message">{chat.message}</div>
+				<div className="message">
+					<ReactMarkdown remarkPlugins={[remarkGfm]}>
+						{chat.message}
+					</ReactMarkdown>
+				</div>
 				{chat.user === "gemini" && chat.response && (
-					<div className="response">{chat.response}</div>
+					<div className="response">
+						<ReactMarkdown remarkPlugins={[remarkGfm]}>
+							{chat.response}
+						</ReactMarkdown>
+					</div>
 				)}
 			</div>
 		</div>
 	);
 };
-
 export default Dashboard;
