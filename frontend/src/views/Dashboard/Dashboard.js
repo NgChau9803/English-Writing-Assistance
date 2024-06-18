@@ -42,6 +42,7 @@ function Dashboard() {
 			console.error("Error fetching chatboxes:", error);
 		}
 	};
+
 	const fetchChatboxById = async (id) => {
 		const token = localStorage.getItem("authToken");
 		try {
@@ -52,13 +53,13 @@ function Dashboard() {
 				}
 			);
 			// Check if the response contains the necessary properties
-			if (response.data && response.data.chats) {
-				return { ...response.data, chats: response.data.chats };
+			if (response.data && response.data.id && response.data.chats) {
+				return response.data.chats;
 			}
-			return { chats: [] };
+			return { id, name: "New Chat", chats: [] };
 		} catch (error) {
 			console.error("Error fetching chatbox:", error);
-			return { chats: [] };
+			return { id, name: "New Chat", chats: [] };
 		}
 	};
 
@@ -110,15 +111,22 @@ function Dashboard() {
 			console.error("Error renaming chatbox:", error);
 		}
 	};
+
 	const openChatbox = async (id) => {
-		const token = localStorage.getItem("authToken");
-		const chatbox = await fetchChatboxById(id, token);
-		setChatboxes(
-			chatboxes.map((cb) =>
-				cb.id === id ? { ...cb, chats: chatbox.chats } : cb
-			)
-		);
-		setActiveChatbox(id);
+		try {
+			const chatbox = await fetchChatboxById(id);
+			console.log("Fetched chatbox:", chatbox);
+			setActiveChatbox(id);
+			console.log("Active chatbox set to:", id);
+			return chatbox;
+		} catch (error) {
+			console.error("Error opening chatbox:", error);
+		}
+	};
+
+	const logout = () => {
+		localStorage.removeItem("authToken");
+		navigate("/");
 	};
 
 	const handleSubmit = async (e) => {
@@ -140,17 +148,11 @@ function Dashboard() {
 			const token = localStorage.getItem("authToken");
 			const response = await axios.post(
 				"http://localhost:5000/processText",
-				{
-					chatboxId: activeChatbox,
-					text: input,
-				},
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
+				{ chatboxId: activeChatbox, text: input },
+				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 
 			const aiMessage = { message: response.data.response, user: "gemini" };
-
 			setChatboxes(
 				updatedChatboxes.map((chatbox) => {
 					if (chatbox.id === activeChatbox) {
@@ -183,36 +185,40 @@ function Dashboard() {
 						<button onClick={() => deleteChatbox(chatbox.id)}>Delete</button>
 					</div>
 				))}
+				<button className="log-out" onClick={logout}>
+					Log out
+				</button>
 			</aside>
 			<section className="chat-box">
 				{activeChatbox && (
-					<div className="chat-log">
-						{chatboxes
-							.find((chatbox) => chatbox.id === activeChatbox)
-							.chats?.map((chat, index) => (
-								<Chatting key={index} chat={chat} />
-							))}
-					</div>
-				)}
-				{activeChatbox && (
-					<div className="chat-input-holder">
-						<form onSubmit={handleSubmit} className="form">
-							<textarea
-								value={input}
-								onChange={(e) => setInput(e.target.value)}
-								className="chat-input"
-								placeholder="Type a message..."
-								rows={1}></textarea>
-							<button type="submit" className="submit-button">
-								Submit
-							</button>
-						</form>
-					</div>
+					<>
+						<div className="chat-log">
+							{chatboxes
+								.find((chatbox) => chatbox.id === activeChatbox)
+								?.chats?.map((chat, index) => (
+									<Chatting key={index} chat={chat} />
+								))}
+						</div>
+						<div className="chat-input-holder">
+							<form onSubmit={handleSubmit} className="form">
+								<textarea
+									value={input}
+									onChange={(e) => setInput(e.target.value)}
+									className="chat-input"
+									placeholder="Type a message..."
+									rows={1}></textarea>
+								<button type="submit" className="submit-button">
+									Submit
+								</button>
+							</form>
+						</div>
+					</>
 				)}
 			</section>
 		</div>
 	);
 }
+
 const Chatting = ({ chat }) => {
 	if (!chat || !chat.user || !chat.message) {
 		return null;
@@ -225,7 +231,7 @@ const Chatting = ({ chat }) => {
 					className={`avatar ${
 						chat.user === "gemini" ? "gemini-avatar" : "user-avatar"
 					}`}>
-					{chat.user.toUpperCase()}
+					{chat.user.charAt(0).toUpperCase() + chat.user.toLowerCase().slice(1)}
 				</div>
 				<div className="message">
 					<ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -243,4 +249,5 @@ const Chatting = ({ chat }) => {
 		</div>
 	);
 };
+
 export default Dashboard;

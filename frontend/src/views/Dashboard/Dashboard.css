@@ -103,7 +103,7 @@
 }
 
 .chat.gemini {
-  background-color: #40414f;
+  background-color: #40414f62;
   display: inherit;
 }
 
@@ -163,4 +163,16 @@
 .form {
   display: flex;
   justify-content: center;
+}
+
+.log-out {
+  position: absolute;
+  background-color: #565869;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.4s;
+  padding: 15px;
+  bottom: 20px;
+  left: 95px;
 }
